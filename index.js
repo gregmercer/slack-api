@@ -17,7 +17,10 @@ function testInviteGroup() {
     user : '<user id>',
   };
 
-  doPost(apiUrl, options, null);
+  doPost(apiUrl, options, function(body) {
+    console.log('in callback for testInviteGroup');
+    console.log(body);
+  });
 }
 
 function testCreateGroup() {
@@ -30,7 +33,10 @@ function testCreateGroup() {
     name : '<group name>',
   };
 
-  doPost(apiUrl, options, null);
+  doPost(apiUrl, options, function(body) {
+    console.log('in callback for testCreateGroup');
+    console.log(body);
+  });
 }
 
 function testArchiveChannel() {
@@ -43,7 +49,10 @@ function testArchiveChannel() {
     channel : '<channel id>',
   };
 
-  doPost(apiUrl, options, null);
+  doPost(apiUrl, options, function(body) {
+    console.log('in callback for testArchiveChannel');
+    console.log(body);
+  });
 }
 
 function testCreateChannel() {
@@ -56,7 +65,30 @@ function testCreateChannel() {
     name : '<channel name>',
   };
 
-  doPost(apiUrl, options, null);
+  doPost(apiUrl, options, function(body) {
+    console.log('in callback for testCreateChannel');
+    console.log(body);
+  });
+}
+
+function testChannelsHistory() {
+
+  var apiToken = nconf.get('API_TOKEN');
+  var apiUrl = 'https://slack.com/api/channels.history';
+
+  var options = {
+    token : apiToken,
+    channel : '<channel id>',
+    count : 5, // get the last five
+  };
+
+  doPost(apiUrl, options, function(body) {
+    console.log('in callback for testChannelsHistory');
+    console.log(body);
+    for (var index = 0; index < body.messages.length; index++) {
+      console.log(body.messages[index].attachments);
+    }
+  });
 }
 
 function testChannelsList() {
@@ -68,7 +100,10 @@ function testChannelsList() {
     token : apiToken,
   }
 
-  doPost(apiUrl, options, null);
+  doPost(apiUrl, options, function(body) {
+    console.log('in callback for testChannelsList');
+    console.log(body);
+  });
 }
 
 function testUsersList() {
@@ -80,7 +115,10 @@ function testUsersList() {
     token : apiToken,
   }
 
-  doPost(apiUrl, options, null);
+  doPost(apiUrl, options, function(body) {
+    console.log('in callback for testUsersList');
+    console.log(body);
+  });
 }
 
 function writeBody(body) {
@@ -105,10 +143,10 @@ function doPost(apiUrl, options, callback) {
   }, function(err, resp, body) {
 
     console.log("returned from post: err = " + err);
-    console.log(body);
 
     if (callback != null) {
       if (body === 'ok') {
+        console.log('body === ok');
         return callback(null, body);
       } else {
         return callback(err || body);
